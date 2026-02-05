@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pentru Lucy</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #ffdde1; /* Light Pink */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            color: #d32f2f;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            white-space: pre-wrap; 
+        }
+
+        /* GIF Styling */
+        img {
+            width: 250px;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .primary-btn {
+            background-color: #ff4081; /* Hot Pink */
+        }
+        
+        .yes-btn {
+            background-color: #4CAF50; /* Green */
+        }
+
+        .no-btn {
+            background-color: #f44336; /* Red */
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="phase1">
+        <img src="https://media1.tenor.com/m/P-nfOrEPA68AAAAd/sit-tree.gif" alt="Sad Bear">
+        
+        <h1>I know we had our ups and downs. Știu că poate nu mă mai iubești, dar tot trebuia să te întreb lucrul ăsta într-un mod care poate ți-ar plăcea.</h1>
+        
+        <button class="primary-btn" onclick="nextPhase(1)">Press me</button>
+    </div>
+
+    <div class="container hidden" id="phase2">
+        <img src="https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif" alt="Hugging Bear">
+        
+        <h1>Au trecut 11 luni de când ne cunoaștem, și în aceste 11 luni am învățat o grămadă de lucruri datorită ție, Lucy. Pentru asta îți mulțumesc enorm de mult.</h1>
+        
+        <button class="primary-btn" onclick="nextPhase(2)">Next</button>
+    </div>
+
+    <div class="container hidden" id="phase3">
+        <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="Shy Bear">
+        
+        <h1>Deci, am vrut să te întreb...</h1>
+        
+        <button class="primary-btn" onclick="nextPhase(3)">Next</button>
+    </div>
+
+    <div class="container hidden" id="phase4">
+        <img id="gameBear" src="https://media.giphy.com/media/LpdlqTkgO2Lwwixwv7/giphy.gif" alt="Asking Bear">
+        
+        <h1>Vrei să mă faci cel mai fericit băiat (bărbat) și să fii Valentine-ul meu?</h1>
+        
+        <div class="btn-container">
+            <button class="yes-btn" id="yesBtnGame" onclick="finishGame()">Da</button>
+            <button class="no-btn" id="noBtnGame" onclick="handleGameLogic()">Nu</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="phase5">
+        <img src="https://media.giphy.com/media/13CoXDiaCcCoyk/giphy.gif" alt="Pookie Please">
+        
+        <h1>Măcar o a doua șansă îmi dai, Lucy? Te rog?<br>Let's try one more time for Valentine's or after.</h1>
+        
+        <div class="btn-container">
+            <button class="yes-btn" onclick="finishGame()">mm bine..</button>
+            <button class="no-btn" id="trickBtn" onmouseover="trickSwap()" onclick="finishGame()">Nu!</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="phase6">
+        <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif" alt="Love Bear">
+        
+        <h1>Te iubesc!! Ne vedem de Valentine's, guriță! ❤️</h1>
+    </div>
+
+    <script>
+        // --- Navigation Logic ---
+        function nextPhase(currentPhase) {
+            // Hide current
+            document.getElementById(`phase${currentPhase}`).classList.add('hidden');
+            // Show next
+            document.getElementById(`phase${currentPhase + 1}`).classList.remove('hidden');
+        }
+
+        // --- PHASE 4 Logic (The Growing Button) ---
+        let noClicks = 0;
+        const phase4Texts = [
+            "Sigur?",
+            "Sigur sigur?",
+            "Sigurrr sigurr sigurrr?",
+            "Ok apasă-mă"
+        ];
+        
+        function handleGameLogic() {
+            const noBtn = document.getElementById('noBtnGame');
+            const yesBtn = document.getElementById('yesBtnGame');
+            const bear = document.getElementById('gameBear');
+
+            if (noClicks < 4) {
+                // Change text
+                noBtn.innerText = phase4Texts[noClicks];
+                
+                // Grow Yes button
+                let scale = 1.3 + (noClicks * 0.5); 
+                yesBtn.style.transform = `scale(${scale})`;
+                
+                // Change bear to Crying bear on 3rd click (reliable Giphy link)
+                if (noClicks === 2) {
+                    bear.src = "https://media.giphy.com/media/W0c3xcZ3F1d0EYYb0f/giphy.gif";
+                }
+            }
+            
+            // If it's the 4th click (index 3 is "ok apasama")
+            if (noClicks === 4) {
+               // She pressed "ok apasama", so we go to Phase 5
+               nextPhase(4);
+            }
+
+            noClicks++;
+        }
+
+        // --- PHASE 5 Logic (The Trick) ---
+        function trickSwap() {
+            const btn = document.getElementById('trickBtn');
+            btn.innerText = "mm bine..";
+            btn.style.backgroundColor = "#4CAF50"; // Turn Green
+            // If she clicks it now, it calls finishGame()
+        }
+
+        // --- Finish ---
+        function finishGame() {
+            // Hide everything else
+            for(let i=1; i<=5; i++) {
+                const el = document.getElementById(`phase${i}`);
+                if(el) el.classList.add('hidden');
+            }
+            // Show final
+            document.getElementById('phase6').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
