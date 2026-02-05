@@ -52,6 +52,8 @@
             align-items: center;
             gap: 20px;
             flex-wrap: wrap;
+            position: relative; 
+            z-index: 100;
         }
 
         button {
@@ -126,8 +128,8 @@
         <h1>Măcar o a doua șansă îmi dai, Lucy? Te rog?<br>Let's try one more time for Valentine's or after.</h1>
         
         <div class="btn-container">
-            <button class="yes-btn" onclick="finishGame()">mm bine..</button>
-            <button class="no-btn" id="trickBtn" onmouseover="trickSwap()" onclick="finishGame()">Nu!</button>
+            <button class="yes-btn" id="yesBtnPhase5" onclick="finishGame()">mm bine..</button>
+            <button class="no-btn" id="noBtnPhase5" onclick="handlePhase5Logic()">Nu!</button>
         </div>
     </div>
 
@@ -140,9 +142,7 @@
     <script>
         // --- Navigation Logic ---
         function nextPhase(currentPhase) {
-            // Hide current
             document.getElementById(`phase${currentPhase}`).classList.add('hidden');
-            // Show next
             document.getElementById(`phase${currentPhase + 1}`).classList.remove('hidden');
         }
 
@@ -161,44 +161,59 @@
             const bear = document.getElementById('gameBear');
 
             if (noClicks < 4) {
-                // Change text
                 noBtn.innerText = phase4Texts[noClicks];
-                
-                // Grow Yes button
                 let scale = 1.3 + (noClicks * 0.5); 
                 yesBtn.style.transform = `scale(${scale})`;
                 
-                // Change bear to Crying bear on 3rd click (reliable Giphy link)
                 if (noClicks === 2) {
                     bear.src = "https://media.giphy.com/media/W0c3xcZ3F1d0EYYb0f/giphy.gif";
                 }
             }
             
-            // If it's the 4th click (index 3 is "ok apasama")
             if (noClicks === 4) {
-               // She pressed "ok apasama", so we go to Phase 5
                nextPhase(4);
             }
 
             noClicks++;
         }
 
-        // --- PHASE 5 Logic (The Trick) ---
-        function trickSwap() {
-            const btn = document.getElementById('trickBtn');
-            btn.innerText = "mm bine..";
-            btn.style.backgroundColor = "#4CAF50"; // Turn Green
-            // If she clicks it now, it calls finishGame()
+        // --- PHASE 5 Logic (FIXED FOR MOBILE) ---
+        // Instead of hover, we use clicks to make "mm bine" bigger
+        let phase5Clicks = 0;
+        const phase5Texts = [
+            "Te rog?", 
+            "Chiar nu?", 
+            "Promit că o să fie bine", 
+            "Ok..."
+        ];
+
+        function handlePhase5Logic() {
+            const noBtn = document.getElementById('noBtnPhase5');
+            const yesBtn = document.getElementById('yesBtnPhase5');
+
+            if (phase5Clicks < 4) {
+                // Change the "Nu" text
+                noBtn.innerText = phase5Texts[phase5Clicks];
+                
+                // Make "mm bine" grow bigger and bigger
+                let scale = 1.3 + (phase5Clicks * 0.5); 
+                yesBtn.style.transform = `scale(${scale})`;
+            }
+            
+            // If she presses the last "Nu" (or "Ok..."), it counts as a Yes
+            if (phase5Clicks === 4) {
+                 finishGame();
+            }
+
+            phase5Clicks++;
         }
 
         // --- Finish ---
         function finishGame() {
-            // Hide everything else
             for(let i=1; i<=5; i++) {
                 const el = document.getElementById(`phase${i}`);
                 if(el) el.classList.add('hidden');
             }
-            // Show final
             document.getElementById('phase6').classList.remove('hidden');
         }
     </script>
